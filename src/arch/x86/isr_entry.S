@@ -1,0 +1,565 @@
+#define __ASM__
+
+#include <x86/gdt.h>
+
+#define ISR_NOEC(handler_name, n)	\
+	handler_name:				\
+	pushl $0;				\
+	pushl $(n);				\
+	jmp cpu_context_save	
+
+#define ISR(handler_name, n) 		\
+	handler_name:				\
+	pushl $(n);				\
+	jmp cpu_context_save	
+
+.code32	
+
+/***********************************************************************************
+ cpu_context_save is "called" (handlers jump to its address) whenever
+ an interrupt occurs to generate on the stack a proper Interrupted_cpu_context structure
+************************************************************************************/
+cpu_context_save:
+	pusha
+	pushl %gs
+	pushl %fs
+	pushl %es
+	pushl %ds
+	movl $KERNEL_DS, %eax
+	movw %ax, %ds
+	movw %ax, %es
+	movw %ax, %fs
+	movw %ax, %gs
+	movw %ax, %ss
+
+	push %esp
+	call interrupt_dispatcher
+	add $4, %esp
+	
+	//Restore the interrupted context
+	jmp __cpu_context_restore
+
+/**************************************************
+	Low level interrupts handlers
+***************************************************/
+
+/*	Intel exceptions from 0 to 31           */
+ISR_NOEC(handler0,			0)
+ISR_NOEC(handler1,			1)
+ISR_NOEC(handler2,			2)
+ISR_NOEC(handler3,			3)
+ISR_NOEC(handler4,			4)
+ISR_NOEC(handler5,			5)
+ISR_NOEC(handler6,			6)
+ISR_NOEC(handler7,			7)
+ISR(handler8,				8)
+ISR_NOEC(handler9,			9)
+ISR(handler10,				10)
+ISR(handler11,				11)
+ISR(handler12,				12)
+ISR(handler13,				13)
+ISR(handler14,				14)
+ISR_NOEC(handler15,			15)
+ISR_NOEC(handler16,			16)
+ISR(handler17,				17)
+ISR_NOEC(handler18,			18)
+ISR_NOEC(handler19,			19)
+ISR_NOEC(handler20,			20)
+ISR_NOEC(handler21,			21)
+ISR_NOEC(handler22,			22)
+ISR_NOEC(handler23,			23)
+ISR_NOEC(handler24,			24)
+ISR_NOEC(handler25,			25)
+ISR_NOEC(handler26,			26)
+ISR_NOEC(handler27,			27)
+ISR_NOEC(handler28,			28)
+ISR_NOEC(handler29,			29)
+ISR_NOEC(handler30,			30)
+ISR_NOEC(handler31,			31)
+
+/*		User defined interrupts		 */
+ISR_NOEC(handler32,			32)
+ISR_NOEC(handler33,			33)
+ISR_NOEC(handler34,			34)
+ISR_NOEC(handler35,			35)
+ISR_NOEC(handler36,			36)
+ISR_NOEC(handler37,			37)
+ISR_NOEC(handler38,			38)
+ISR_NOEC(handler39,			39)
+ISR_NOEC(handler40,			40)
+ISR_NOEC(handler41,			41)
+ISR_NOEC(handler42,			42)
+ISR_NOEC(handler43,			43)
+ISR_NOEC(handler44,			44)
+ISR_NOEC(handler45,			45)
+ISR_NOEC(handler46,			46)
+ISR_NOEC(handler47,			47)
+ISR_NOEC(handler48,			48)
+ISR_NOEC(handler49,			49)
+ISR_NOEC(handler50,			50)
+ISR_NOEC(handler51,			51)
+ISR_NOEC(handler52,			52)
+ISR_NOEC(handler53,			53)
+ISR_NOEC(handler54,			54)
+ISR_NOEC(handler55,			55)
+ISR_NOEC(handler56,			56)
+ISR_NOEC(handler57,			57)
+ISR_NOEC(handler58,			58)
+ISR_NOEC(handler59,			59)
+ISR_NOEC(handler60,			60)
+ISR_NOEC(handler61,			61)
+ISR_NOEC(handler62,			62)
+ISR_NOEC(handler63,			63)
+ISR_NOEC(handler64,			64)
+ISR_NOEC(handler65,			65)
+ISR_NOEC(handler66,			66)
+ISR_NOEC(handler67,			67)
+ISR_NOEC(handler68,			68)
+ISR_NOEC(handler69,			69)
+ISR_NOEC(handler70,			70)
+ISR_NOEC(handler71,			71)
+ISR_NOEC(handler72,			72)
+ISR_NOEC(handler73,			73)
+ISR_NOEC(handler74,			74)
+ISR_NOEC(handler75,			75)
+ISR_NOEC(handler76,			76)
+ISR_NOEC(handler77,			77)
+ISR_NOEC(handler78,			78)
+ISR_NOEC(handler79,			79)
+ISR_NOEC(handler80,			80)
+ISR_NOEC(handler81,			81)
+ISR_NOEC(handler82,			82)
+ISR_NOEC(handler83,			83)
+ISR_NOEC(handler84,			84)
+ISR_NOEC(handler85,			85)
+ISR_NOEC(handler86,			86)
+ISR_NOEC(handler87,			87)
+ISR_NOEC(handler88,			88)
+ISR_NOEC(handler89,			89)
+ISR_NOEC(handler90,			90)
+ISR_NOEC(handler91,			91)
+ISR_NOEC(handler92,			92)
+ISR_NOEC(handler93,			93)
+ISR_NOEC(handler94,			94)
+ISR_NOEC(handler95,			95)
+ISR_NOEC(handler96,			96)
+ISR_NOEC(handler97,			97)
+ISR_NOEC(handler98,			98)
+ISR_NOEC(handler99,			99)
+ISR_NOEC(handler100,			100)
+ISR_NOEC(handler101,			101)
+ISR_NOEC(handler102,			102)
+ISR_NOEC(handler103,			103)
+ISR_NOEC(handler104,			104)
+ISR_NOEC(handler105,			105)
+ISR_NOEC(handler106,			106)
+ISR_NOEC(handler107,			107)
+ISR_NOEC(handler108,			108)
+ISR_NOEC(handler109,			109)
+ISR_NOEC(handler110,			110)
+ISR_NOEC(handler111,			111)
+ISR_NOEC(handler112,			112)
+ISR_NOEC(handler113,			113)
+ISR_NOEC(handler114,			114)
+ISR_NOEC(handler115,			115)
+ISR_NOEC(handler116,			116)
+ISR_NOEC(handler117,			117)
+ISR_NOEC(handler118,			118)
+ISR_NOEC(handler119,			119)
+ISR_NOEC(handler120,			120)
+ISR_NOEC(handler121,			121)
+ISR_NOEC(handler122,			122)
+ISR_NOEC(handler123,			123)
+ISR_NOEC(handler124,			124)
+ISR_NOEC(handler125,			125)
+ISR_NOEC(handler126,			126)
+ISR_NOEC(handler127,			127)
+ISR_NOEC(handler128,			128)
+ISR_NOEC(handler129,			129)
+ISR_NOEC(handler130,			130)
+ISR_NOEC(handler131,			131)
+ISR_NOEC(handler132,			132)
+ISR_NOEC(handler133,			133)
+ISR_NOEC(handler134,			134)
+ISR_NOEC(handler135,			135)
+ISR_NOEC(handler136,			136)
+ISR_NOEC(handler137,			137)
+ISR_NOEC(handler138,			138)
+ISR_NOEC(handler139,			139)
+ISR_NOEC(handler140,			140)
+ISR_NOEC(handler141,			141)
+ISR_NOEC(handler142,			142)
+ISR_NOEC(handler143,			143)
+ISR_NOEC(handler144,			144)
+ISR_NOEC(handler145,			145)
+ISR_NOEC(handler146,			146)
+ISR_NOEC(handler147,			147)
+ISR_NOEC(handler148,			148)
+ISR_NOEC(handler149,			149)
+ISR_NOEC(handler150,			150)
+ISR_NOEC(handler151,			151)
+ISR_NOEC(handler152,			152)
+ISR_NOEC(handler153,			153)
+ISR_NOEC(handler154,			154)
+ISR_NOEC(handler155,			155)
+ISR_NOEC(handler156,			156)
+ISR_NOEC(handler157,			157)
+ISR_NOEC(handler158,			158)
+ISR_NOEC(handler159,			159)
+ISR_NOEC(handler160,			160)
+ISR_NOEC(handler161,			161)
+ISR_NOEC(handler162,			162)
+ISR_NOEC(handler163,			163)
+ISR_NOEC(handler164,			164)
+ISR_NOEC(handler165,			165)
+ISR_NOEC(handler166,			166)
+ISR_NOEC(handler167,			167)
+ISR_NOEC(handler168,			168)
+ISR_NOEC(handler169,			169)
+ISR_NOEC(handler170,			170)
+ISR_NOEC(handler171,			171)
+ISR_NOEC(handler172,			172)
+ISR_NOEC(handler173,			173)
+ISR_NOEC(handler174,			174)
+ISR_NOEC(handler175,			175)
+ISR_NOEC(handler176,			176)
+ISR_NOEC(handler177,			177)
+ISR_NOEC(handler178,			178)
+ISR_NOEC(handler179,			179)
+ISR_NOEC(handler180,			180)
+ISR_NOEC(handler181,			181)
+ISR_NOEC(handler182,			182)
+ISR_NOEC(handler183,			183)
+ISR_NOEC(handler184,			184)
+ISR_NOEC(handler185,			185)
+ISR_NOEC(handler186,			186)
+ISR_NOEC(handler187,			187)
+ISR_NOEC(handler188,			188)
+ISR_NOEC(handler189,			189)
+ISR_NOEC(handler190,			190)
+ISR_NOEC(handler191,			191)
+ISR_NOEC(handler192,			192)
+ISR_NOEC(handler193,			193)
+ISR_NOEC(handler194,			194)
+ISR_NOEC(handler195,			195)
+ISR_NOEC(handler196,			196)
+ISR_NOEC(handler197,			197)
+ISR_NOEC(handler198,			198)
+ISR_NOEC(handler199,			199)
+ISR_NOEC(handler200,			200)
+ISR_NOEC(handler201,			201)
+ISR_NOEC(handler202,			202)
+ISR_NOEC(handler203,			203)
+ISR_NOEC(handler204,			204)
+ISR_NOEC(handler205,			205)
+ISR_NOEC(handler206,			206)
+ISR_NOEC(handler207,			207)
+ISR_NOEC(handler208,			208)
+ISR_NOEC(handler209,			209)
+ISR_NOEC(handler210,			210)
+ISR_NOEC(handler211,			211)
+ISR_NOEC(handler212,			212)
+ISR_NOEC(handler213,			213)
+ISR_NOEC(handler214,			214)
+ISR_NOEC(handler215,			215)
+ISR_NOEC(handler216,			216)
+ISR_NOEC(handler217,			217)
+ISR_NOEC(handler218,			218)
+ISR_NOEC(handler219,			219)
+ISR_NOEC(handler220,			220)
+ISR_NOEC(handler221,			221)
+ISR_NOEC(handler222,			222)
+ISR_NOEC(handler223,			223)
+ISR_NOEC(handler224,			224)
+ISR_NOEC(handler225,			225)
+ISR_NOEC(handler226,			226)
+ISR_NOEC(handler227,			227)
+ISR_NOEC(handler228,			228)
+ISR_NOEC(handler229,			229)
+ISR_NOEC(handler230,			230)
+ISR_NOEC(handler231,			231)
+ISR_NOEC(handler232,			232)
+ISR_NOEC(handler233,			233)
+ISR_NOEC(handler234,			234)
+ISR_NOEC(handler235,			235)
+ISR_NOEC(handler236,			236)
+ISR_NOEC(handler237,			237)
+ISR_NOEC(handler238,			238)
+ISR_NOEC(handler239,			239)
+ISR_NOEC(handler240,			240)
+ISR_NOEC(handler241,			241)
+ISR_NOEC(handler242,			242)
+ISR_NOEC(handler243,			243)
+ISR_NOEC(handler244,			244)
+ISR_NOEC(handler245,			245)
+ISR_NOEC(handler246,			246)
+ISR_NOEC(handler247,			247)
+ISR_NOEC(handler248,			248)
+ISR_NOEC(handler249,			249)
+ISR_NOEC(handler250,			250)
+ISR_NOEC(handler251,			251)
+ISR_NOEC(handler252,			252)
+ISR_NOEC(handler253,			253)
+ISR_NOEC(handler254,			254)
+ISR_NOEC(handler255,			255)
+
+.data
+/* Global array which contains all interrupts subroutines' entries addresses*/
+.globl isr_entries
+isr_entries:
+	.long handler0
+	.long handler1
+	.long handler2
+	.long handler3
+	.long handler4
+	.long handler5
+	.long handler6
+	.long handler7
+	.long handler8
+	.long handler9
+	.long handler10
+	.long handler11
+	.long handler12
+	.long handler13
+	.long handler14
+	.long handler15
+	.long handler16
+	.long handler17
+	.long handler18
+	.long handler19
+	.long handler20
+	.long handler21
+	.long handler22
+	.long handler23
+	.long handler24
+	.long handler25
+	.long handler26
+	.long handler27
+	.long handler28
+	.long handler29
+	.long handler30
+	.long handler31
+	.long handler32
+	.long handler33
+	.long handler34
+	.long handler35
+	.long handler36
+	.long handler37
+	.long handler38
+	.long handler39
+	.long handler40
+	.long handler41
+	.long handler42
+	.long handler43
+	.long handler44
+	.long handler45
+	.long handler46
+	.long handler47
+	.long handler48
+	.long handler49
+	.long handler50
+	.long handler51
+	.long handler52
+	.long handler53
+	.long handler54
+	.long handler55
+	.long handler56
+	.long handler57
+	.long handler58
+	.long handler59
+	.long handler60
+	.long handler61
+	.long handler62
+	.long handler63
+	.long handler64
+	.long handler65
+	.long handler66
+	.long handler67
+	.long handler68
+	.long handler69
+	.long handler70
+	.long handler71
+	.long handler72
+	.long handler73
+	.long handler74
+	.long handler75
+	.long handler76
+	.long handler77
+	.long handler78
+	.long handler79
+	.long handler80
+	.long handler81
+	.long handler82
+	.long handler83
+	.long handler84
+	.long handler85
+	.long handler86
+	.long handler87
+	.long handler88
+	.long handler89
+	.long handler90
+	.long handler91
+	.long handler92
+	.long handler93
+	.long handler94
+	.long handler95
+	.long handler96
+	.long handler97
+	.long handler98
+	.long handler99
+	.long handler100
+	.long handler101
+	.long handler102
+	.long handler103
+	.long handler104
+	.long handler105
+	.long handler106
+	.long handler107
+	.long handler108
+	.long handler109
+	.long handler110
+	.long handler111
+	.long handler112
+	.long handler113
+	.long handler114
+	.long handler115
+	.long handler116
+	.long handler117
+	.long handler118
+	.long handler119
+	.long handler120
+	.long handler121
+	.long handler122
+	.long handler123
+	.long handler124
+	.long handler125
+	.long handler126
+	.long handler127
+	.long handler128
+	.long handler129
+	.long handler130
+	.long handler131
+	.long handler132
+	.long handler133
+	.long handler134
+	.long handler135
+	.long handler136
+	.long handler137
+	.long handler138
+	.long handler139
+	.long handler140
+	.long handler141
+	.long handler142
+	.long handler143
+	.long handler144
+	.long handler145
+	.long handler146
+	.long handler147
+	.long handler148
+	.long handler149
+	.long handler150
+	.long handler151
+	.long handler152
+	.long handler153
+	.long handler154
+	.long handler155
+	.long handler156
+	.long handler157
+	.long handler158
+	.long handler159
+	.long handler160
+	.long handler161
+	.long handler162
+	.long handler163
+	.long handler164
+	.long handler165
+	.long handler166
+	.long handler167
+	.long handler168
+	.long handler169
+	.long handler170
+	.long handler171
+	.long handler172
+	.long handler173
+	.long handler174
+	.long handler175
+	.long handler176
+	.long handler177
+	.long handler178
+	.long handler179
+	.long handler180
+	.long handler181
+	.long handler182
+	.long handler183
+	.long handler184
+	.long handler185
+	.long handler186
+	.long handler187
+	.long handler188
+	.long handler189
+	.long handler190
+	.long handler191
+	.long handler192
+	.long handler193
+	.long handler194
+	.long handler195
+	.long handler196
+	.long handler197
+	.long handler198
+	.long handler199
+	.long handler200
+	.long handler201
+	.long handler202
+	.long handler203
+	.long handler204
+	.long handler205
+	.long handler206
+	.long handler207
+	.long handler208
+	.long handler209
+	.long handler210
+	.long handler211
+	.long handler212
+	.long handler213
+	.long handler214
+	.long handler215
+	.long handler216
+	.long handler217
+	.long handler218
+	.long handler219
+	.long handler220
+	.long handler221
+	.long handler222
+	.long handler223
+	.long handler224
+	.long handler225
+	.long handler226
+	.long handler227
+	.long handler228
+	.long handler229
+	.long handler230
+	.long handler231
+	.long handler232
+	.long handler233
+	.long handler234
+	.long handler235
+	.long handler236
+	.long handler237
+	.long handler238
+	.long handler239
+	.long handler240
+	.long handler241
+	.long handler242
+	.long handler243
+	.long handler244
+	.long handler245
+	.long handler246
+	.long handler247
+	.long handler248
+	.long handler249
+	.long handler250
+	.long handler251
+	.long handler252
+	.long handler253
+	.long handler254
+	.long handler255
