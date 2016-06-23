@@ -138,3 +138,4 @@ clean:
 	-@for file in $(KERNEL_SRC_DIR); do (cd ./$$file && rm -f *.o && rm -f *.*~);  \
 	 done; 
 	@rm linker.lds
+	@rm $(TARGET_BIN)
