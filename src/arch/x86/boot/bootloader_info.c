@@ -35,17 +35,17 @@ void retrieve_bootloader_info(uint32_t magic, void *boot_info)
 
   if(magic == MULTIBOOT_BOOTLOADER_MAGIC)
     {
-      kprintf("AttrOS was loaded by GRUB\n");
+      kprintf("AtrOS was loaded by GRUB\n");
        
     }
   else if(magic == MULTIBOOT2_BOOTLOADER_MAGIC)
     {
-      kprintf("AttrOS was loaded by GRUB2\n");
+      kprintf("AtrOS was loaded by GRUB2\n");
       panic("GRUB2 is not supported by AttrOS!\n");
      }
   else
     {
-      panic("Attros was not loaded by a multiboot-compliant loader.\n");
+      panic("Atros was not loaded by a multiboot-compliant loader.\n");
     }
 
 }
